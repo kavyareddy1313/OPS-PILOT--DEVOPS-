@@ -92,3 +92,4 @@ jobs:
             echo "Checking syntax: $f"
             python3 -c "import yaml; list(yaml.safe_load_all(open('$f')))" || exit 1
           done
+
