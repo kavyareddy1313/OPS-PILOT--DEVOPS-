@@ -1,0 +1,28 @@
+{
+  "name": "opspilot-platform",
+  "version": "1.0.0",
+  "description": "OpsPilot - Automated Deployment, Health Monitoring & Self-Healing Recovery Platform",
+  "scripts": {
+    "test": "npm run test:backend && npm run test:demo",
+    "test:backend": "cd backend && npm test",
+    "test:demo": "cd demo-app && npm test",
+    "build": "cd frontend && npm run build",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:demo": "cd demo-app && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "compose:up": "docker compose up --build -d",
+    "compose:down": "docker compose down",
+    "compose:logs": "docker compose logs -f"
+  },
+  "keywords": [
+    "sre",
+    "devops",
+    "self-healing",
+    "automated-rollback",
+    "kubernetes",
+    "prometheus",
+    "grafana"
+  ],
+  "author": "Kavya Sri Reddy",
+  "license": "MIT"
+}

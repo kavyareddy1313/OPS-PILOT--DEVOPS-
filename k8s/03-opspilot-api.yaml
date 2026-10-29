@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opspilot-api
+  namespace: opspilot-prod
+  labels:
+    app: opspilot-api
+    tier: control-plane
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: opspilot-api
+  template:
+    metadata:
+      labels:
+        app: opspilot-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: opspilot-api
+          image: ghcr.io/kavyareddy1313/opspilot-api:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
+              name: http
+          env:
+            - name: PORT
+              value: "5001"
+            - name: DATABASE_URL
+              value: "postgresql://opspilot_user:opspilot_secure_password_2026@postgres-service:5432/opspilot"
+            - name: DEMO_SERVICE_URL
+              value: "http://demo-service:5002"
+            - name: PROBE_INTERVAL_MS
+              value: "5000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5001
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opspilot-api
+  namespace: opspilot-prod
+  labels:
+    app: opspilot-api
+spec:
+  type: ClusterIP
+  selector:
+    app: opspilot-api
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+      name: http

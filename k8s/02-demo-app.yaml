@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-order-service
+  namespace: opspilot-prod
+  labels:
+    app: demo-order-service
+    tier: microservice
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: demo-order-service
+  template:
+    metadata:
+      labels:
+        app: demo-order-service
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5002"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: order-service
+          image: ghcr.io/kavyareddy1313/demo-service:v1.0.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5002
+              name: http
+          env:
+            - name: PORT
+              value: "5002"
+            - name: APP_VERSION
+              value: "v1.0.2"
+            - name: COMMIT_SHA
+              value: "a8f3b21"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 5002
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-service
+  namespace: opspilot-prod
+  labels:
+    app: demo-order-service
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-order-service
+  ports:
+    - protocol: TCP
+      port: 5002
+      targetPort: 5002
+      name: http

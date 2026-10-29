@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'opspilot-api'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['opspilot-api:5001']
+        labels:
+          tier: 'control-plane'
+          app: 'opspilot'
+
+  - job_name: 'demo-service'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['demo-service:5002']
+        labels:
+          tier: 'microservice'
+          app: 'order-service'
