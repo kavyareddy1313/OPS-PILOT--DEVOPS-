@@ -2,10 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Terminal, 
   Search, 
-  Trash2, 
   Pause, 
-  Play, 
-  Filter 
+  Play 
 } from 'lucide-react';
 
 export default function LiveLogsTab({ logs, onRefresh }) {
@@ -32,18 +30,18 @@ export default function LiveLogsTab({ logs, onRefresh }) {
         <div className="panel-header">
           <div>
             <div className="panel-title">
-              <Terminal size={20} color="#38bdf8" />
+              <Terminal size={20} color="#0284c7" />
               <span>Real-Time Orchestrator & Workload Logs</span>
             </div>
             <div className="panel-description">
-              Live stdout/stderr stream from OpsPilot policy runner and monitored Kubernetes container probes.
+              Live stdout/stderr stream from OpsPilot policy runner and monitored Kubernetes container probes
             </div>
           </div>
 
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {/* Search Input */}
             <div style={{ position: 'relative' }}>
-              <Search size={14} style={{ position: 'absolute', left: '10px', top: '10px', color: '#94a3b8' }} />
+              <Search size={14} style={{ position: 'absolute', left: '10px', top: '10px', color: 'var(--text-muted)' }} />
               <input
                 type="text"
                 placeholder="Filter logs..."
@@ -74,13 +72,13 @@ export default function LiveLogsTab({ logs, onRefresh }) {
               style={{ height: '34px', padding: '0 12px' }}
               onClick={() => setIsPaused(!isPaused)}
             >
-              {isPaused ? <Play size={14} color="#34d399" /> : <Pause size={14} />}
+              {isPaused ? <Play size={14} color="#059669" /> : <Pause size={14} />}
               <span>{isPaused ? 'Resume' : 'Pause'}</span>
             </button>
           </div>
         </div>
 
-        {/* Console Box */}
+        {/* Console Box - Clean Dark Terminal */}
         <div className="terminal-console">
           {filteredLogs.length === 0 ? (
             <div style={{ color: '#64748b', fontStyle: 'italic', padding: '20px', textAlign: 'center' }}>

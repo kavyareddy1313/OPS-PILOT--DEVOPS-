@@ -1,11 +1,8 @@
 import React from 'react';
 import { 
   FileCheck2, 
-  GitCommit, 
-  ShieldCheck, 
   User, 
-  Clock, 
-  Terminal 
+  ShieldCheck 
 } from 'lucide-react';
 
 export default function AuditTrailTab({ auditLogs, onRefresh }) {
@@ -45,9 +42,10 @@ export default function AuditTrailTab({ auditLogs, onRefresh }) {
                     <span 
                       className="mono" 
                       style={{ 
-                        fontWeight: 600, 
-                        color: log.event_type.includes('ROLLBACK') ? '#34d399' : log.event_type.includes('INCIDENT') ? '#fb7185' : '#818cf8',
-                        background: 'rgba(255, 255, 255, 0.04)',
+                        fontWeight: 700, 
+                        color: log.event_type.includes('ROLLBACK') ? '#059669' : log.event_type.includes('INCIDENT') ? '#dc2626' : '#4f46e5',
+                        background: 'var(--bg-card-subtle)',
+                        border: '1px solid var(--border-subtle)',
                         padding: '3px 8px',
                         borderRadius: '4px',
                         fontSize: '0.78rem'
@@ -58,16 +56,16 @@ export default function AuditTrailTab({ auditLogs, onRefresh }) {
                   </td>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <User size={13} color="#94a3b8" />
+                      <User size={13} color="var(--text-muted)" />
                       <span>{log.actor}</span>
                     </div>
                   </td>
                   <td>
-                    <pre className="mono" style={{ fontSize: '0.75rem', color: '#cbd5e1', margin: 0 }}>
+                    <pre className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0, whiteSpace: 'pre-wrap' }}>
                       {typeof log.details === 'object' ? JSON.stringify(log.details) : log.details}
                     </pre>
                   </td>
-                  <td style={{ fontSize: '0.78rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>
+                  <td style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                     {new Date(log.created_at).toLocaleString()}
                   </td>
                   <td>

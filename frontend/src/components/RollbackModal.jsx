@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, RotateCcw, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { X, RotateCcw, AlertTriangle } from 'lucide-react';
 
 export default function RollbackModal({ isOpen, targetVersion, availableVersions, onClose, onConfirm }) {
   const [selectedVersion, setSelectedVersion] = useState(targetVersion || 'v1.0.1');
@@ -26,18 +26,18 @@ export default function RollbackModal({ isOpen, targetVersion, availableVersions
       <div className="modal-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <RotateCcw size={20} color="#fb7185" />
-            <h3 style={{ fontSize: '1.2rem', color: '#f8fafc' }}>Trigger Policy-Driven Rollback</h3>
+            <RotateCcw size={20} color="#dc2626" />
+            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)' }}>Trigger Policy-Driven Rollback</h3>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
 
-        <div style={{ background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.3)', padding: '12px', borderRadius: '8px', marginBottom: '16px', display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <AlertTriangle size={18} color="#fb7185" flexShrink={0} />
-          <div style={{ fontSize: '0.8rem', color: '#fb7185' }}>
-            Executing a rollback will switch the active Kubernetes traffic routing and container image back to the chosen verified release version.
+        <div style={{ background: 'var(--rose-bg)', border: '1px solid var(--rose-border)', padding: '12px', borderRadius: '8px', marginBottom: '16px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <AlertTriangle size={18} color="#dc2626" flexShrink={0} />
+          <div style={{ fontSize: '0.8rem', color: 'var(--rose-text)' }}>
+            Executing a rollback will immediately switch active Kubernetes traffic routing and container image back to the chosen verified release version.
           </div>
         </div>
 

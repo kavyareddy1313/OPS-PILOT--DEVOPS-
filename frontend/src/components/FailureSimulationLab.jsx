@@ -7,7 +7,7 @@ import {
   RefreshCw, 
   CheckCircle2, 
   ArrowRight,
-  ShieldCheck,
+  ShieldCheck, 
   Zap,
   Activity
 } from 'lucide-react';
@@ -18,7 +18,6 @@ export default function FailureSimulationLab({
   onResetFault, 
   isLoading 
 }) {
-  const [activeStep, setActiveStep] = useState(1);
   const health = summary?.health || {};
   const isHealthy = health.isHealthy;
   const consecutive = health.consecutiveFailures || 0;
@@ -26,27 +25,25 @@ export default function FailureSimulationLab({
   const simulatedFault = summary?.simulatedFault;
 
   const handleSimulate = async (type, reason) => {
-    setActiveStep(2);
     await onSimulateFault(type, reason);
   };
 
   const handleReset = async () => {
-    setActiveStep(1);
     await onResetFault();
   };
 
   return (
     <div className="content-section">
-      {/* Banner */}
-      <div className="glass-panel" style={{ borderLeft: '4px solid #6366f1' }}>
-        <div className="panel-header" style={{ marginBottom: '12px' }}>
+      {/* Friendly Banner with Target and Status */}
+      <div className="glass-panel" style={{ borderLeft: '4px solid #4f46e5' }}>
+        <div className="panel-header" style={{ marginBottom: '14px' }}>
           <div>
             <div className="panel-title">
-              <FlaskConical size={22} color="#818cf8" />
-              <span>Controlled Failure Simulation & Recovery Lab</span>
+              <FlaskConical size={22} color="#4f46e5" />
+              <span>Controlled Chaos & Self-Healing Simulation Lab</span>
             </div>
             <div className="panel-description">
-              Safely inject controlled application faults into the test environment to observe real-time detection, policy evaluation, and automated rollback self-healing.
+              Safely inject controlled microservice faults into the target workload to watch OpsPilot detect anomalies and trigger an autonomous rollback in real time.
             </div>
           </div>
 
@@ -64,29 +61,29 @@ export default function FailureSimulationLab({
         </div>
 
         {/* Live Threshold Tracker Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'rgba(0, 0, 0, 0.3)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-          <div style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-            Target: <code>http://localhost:5002/healthz</code>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--bg-card-subtle)', padding: '12px 18px', borderRadius: '8px', border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            Target: <code>http://demo-service:5002/healthz</code>
           </div>
-          <div style={{ height: '14px', width: '1px', background: 'rgba(255, 255, 255, 0.15)' }} />
+          <div style={{ height: '14px', width: '1px', background: 'var(--border-subtle)' }} />
           <div style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span>Consecutive Probe Failures:</span>
+            <span style={{ color: 'var(--text-secondary)' }}>Consecutive Probe Failures:</span>
             <span 
               className="mono" 
               style={{ 
                 fontWeight: 700, 
                 padding: '2px 8px', 
                 borderRadius: '4px',
-                background: consecutive >= threshold ? 'rgba(244, 63, 94, 0.2)' : 'rgba(16, 185, 129, 0.15)',
-                color: consecutive >= threshold ? '#fb7185' : '#34d399',
+                background: consecutive >= threshold ? '#fee2e2' : '#dcfce7',
+                color: consecutive >= threshold ? '#dc2626' : '#15803d',
               }}
             >
               {consecutive} / {threshold}
             </span>
           </div>
-          <div style={{ height: '14px', width: '1px', background: 'rgba(255, 255, 255, 0.15)' }} />
-          <div style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-            Active Policy: <strong style={{ color: '#818cf8' }}>AUTOMATED_ROLLBACK</strong> (Trigger at &gt;= 3 failures)
+          <div style={{ height: '14px', width: '1px', background: 'var(--border-subtle)' }} />
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            Recovery Policy: <strong style={{ color: '#4f46e5' }}>AUTOMATED_ROLLBACK</strong> (Triggers at &gt;= 3 failures)
           </div>
         </div>
       </div>
@@ -94,14 +91,14 @@ export default function FailureSimulationLab({
       {/* Simulation Trigger Cards */}
       <div className="lab-grid">
         {/* Card 1: Probe Failure */}
-        <div className="lab-action-card" style={{ borderTop: '3px solid #f43f5e' }}>
+        <div className="lab-action-card" style={{ borderTop: '3px solid #ef4444' }}>
           <div>
             <div className="lab-card-title">
-              <Flame size={18} color="#f43f5e" />
+              <Flame size={18} color="#ef4444" />
               <span>1. Liveness Probe Failure</span>
             </div>
             <div className="lab-card-desc">
-              Forces <code>/healthz</code> to return HTTP 500. Simulates deadlocks or thread pool saturation. OpsPilot monitors probe failures and triggers rollback when threshold (3/3) is breached.
+              Forces <code>/healthz</code> to return HTTP 500. Simulates severe thread pool exhaustion. OpsPilot detects 3 consecutive failures and triggers auto-rollback.
             </div>
           </div>
           <button
@@ -109,7 +106,7 @@ export default function FailureSimulationLab({
             onClick={() => handleSimulate('probe_failure', 'Simulated 500 internal probe failure')}
             disabled={isLoading}
           >
-            <span>Simulate Probe 500 Failure</span>
+            <span>Simulate Probe Failure (HTTP 500)</span>
           </button>
         </div>
 
@@ -121,12 +118,12 @@ export default function FailureSimulationLab({
               <span>2. 5xx Error Rate Spike (85%)</span>
             </div>
             <div className="lab-card-desc">
-              Injects simulated database connection pool exhaustion. 85% of order requests fail with HTTP 500. Violates error rate threshold policy (&gt; 20%).
+              Simulates database connection pool exhaustion. 85% of order requests fail with HTTP 500, triggering error rate anomaly alerts.
             </div>
           </div>
           <button
             className="btn btn-secondary"
-            style={{ color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.3)' }}
+            style={{ color: '#d97706', borderColor: '#fde68a' }}
             onClick={() => handleSimulate('error_spike', 'Simulated DB connection pool exhaustion (85% errors)')}
             disabled={isLoading}
           >
@@ -135,19 +132,19 @@ export default function FailureSimulationLab({
         </div>
 
         {/* Card 3: High Latency */}
-        <div className="lab-action-card" style={{ borderTop: '3px solid #a78bfa' }}>
+        <div className="lab-action-card" style={{ borderTop: '3px solid #7c3aed' }}>
           <div>
             <div className="lab-card-title">
-              <Timer size={18} color="#a78bfa" />
-              <span>3. Latency Contention (1200ms)</span>
+              <Timer size={18} color="#7c3aed" />
+              <span>3. Latency Spike (1200ms)</span>
             </div>
             <div className="lab-card-desc">
-              Adds artificial 1200ms delay to all request processing. Simulates slow microservice calls, locking, or network degradation.
+              Adds artificial 1200ms delay to all request processing. Simulates slow microservice calls, locking, or network congestion.
             </div>
           </div>
           <button
             className="btn btn-secondary"
-            style={{ color: '#a78bfa', borderColor: 'rgba(167, 139, 250, 0.3)' }}
+            style={{ color: '#7c3aed', borderColor: '#ddd6fe' }}
             onClick={() => handleSimulate('latency', 'Simulated 1200ms artificial delay')}
             disabled={isLoading}
           >
@@ -178,8 +175,8 @@ export default function FailureSimulationLab({
 
       {/* End-to-End Recovery Flow Visualization */}
       <div className="glass-panel">
-        <div className="panel-title" style={{ marginBottom: '16px' }}>
-          <Zap size={18} color="#6366f1" />
+        <div className="panel-title" style={{ marginBottom: '14px' }}>
+          <Zap size={18} color="#4f46e5" />
           <span>OpsPilot Autonomous Recovery Life-Cycle</span>
         </div>
 
@@ -195,17 +192,17 @@ export default function FailureSimulationLab({
             <div
               key={item.step}
               style={{
-                background: item.status === 'active' ? 'rgba(244, 63, 94, 0.15)' : 'rgba(255, 255, 255, 0.02)',
-                border: item.status === 'active' ? '1px solid rgba(244, 63, 94, 0.4)' : '1px solid var(--border-subtle)',
+                background: item.status === 'active' ? 'var(--rose-bg)' : 'var(--bg-card-subtle)',
+                border: item.status === 'active' ? '1px solid var(--rose-border)' : '1px solid var(--border-subtle)',
                 borderRadius: '8px',
                 padding: '12px',
                 fontSize: '0.8rem',
               }}
             >
-              <div style={{ fontWeight: 700, color: item.status === 'active' ? '#fb7185' : '#818cf8', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: item.status === 'active' ? '#dc2626' : '#4f46e5', marginBottom: '4px' }}>
                 {item.step}
               </div>
-              <div style={{ color: '#94a3b8', fontSize: '0.74rem' }}>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.74rem' }}>
                 {item.desc}
               </div>
             </div>

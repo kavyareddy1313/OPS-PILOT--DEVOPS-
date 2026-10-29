@@ -25,15 +25,22 @@ import {
 } from './services/api';
 
 import { 
-  Layers, 
+  Rocket, 
   Activity, 
-  AlertOctagon, 
+  ShieldCheck, 
   FlaskConical, 
   FileCheck2, 
-  Terminal 
+  Terminal,
+  Zap,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('opspilot_theme') || 'light';
+  });
+
   const [activeTab, setActiveTab] = useState('deployments');
   const [summary, setSummary] = useState(null);
   const [timeSeries, setTimeSeries] = useState([]);
@@ -46,6 +53,16 @@ export default function App() {
   const [isRollbackModalOpen, setIsRollbackModalOpen] = useState(false);
   const [rollbackTarget, setRollbackTarget] = useState('v1.0.1');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sync theme with document element
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('opspilot_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   // Load all telemetry & status
   const loadData = useCallback(async () => {
@@ -124,7 +141,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Top Navigation */}
+      {/* Top Navigation Bar with Theme Toggle */}
       <Navbar
         summary={summary}
         onOpenDeploy={() => setIsDeployModalOpen(true)}
@@ -134,19 +151,83 @@ export default function App() {
         }}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
+
+      {/* Quick Overview Hero Bar - Simple & User-Friendly */}
+      <div className="hero-overview-bar">
+        <div className="hero-overview-left">
+          <div className="hero-stat">
+            <span className="hero-stat-label">Active Workload</span>
+            <span className="hero-stat-val">
+              <span className="badge badge-active" style={{ fontSize: '0.75rem' }}>Production</span>
+              <span>{summary?.activeRelease?.version || 'v1.0.2'}</span>
+            </span>
+          </div>
+
+          <div className="hero-stat">
+            <span className="hero-stat-label">Health & Probes</span>
+            <span className="hero-stat-val" style={{ color: summary?.health?.isHealthy ? '#059669' : '#dc2626' }}>
+              {summary?.health?.isHealthy ? (
+                <>
+                  <CheckCircle2 size={16} />
+                  <span>Healthy (0 Failures)</span>
+                </>
+              ) : (
+                <>
+                  <AlertTriangle size={16} />
+                  <span>Degraded ({summary?.health?.consecutiveFailures}/3)</span>
+                </>
+              )}
+            </span>
+          </div>
+
+          <div className="hero-stat">
+            <span className="hero-stat-label">Self-Healing Policy</span>
+            <span className="hero-stat-val" style={{ color: '#4f46e5' }}>
+              <ShieldCheck size={16} />
+              <span>Auto-Rollback Active</span>
+            </span>
+          </div>
+
+          <div className="hero-stat">
+            <span className="hero-stat-label">Target Service</span>
+            <span className="hero-stat-val" style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>
+              <code>demo-service:5002</code>
+            </span>
+          </div>
+        </div>
+
+        <div className="hero-overview-right">
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setActiveTab('simulation')}
+          >
+            <FlaskConical size={14} color="#7c3aed" />
+            <span>Chaos Test Lab</span>
+          </button>
+          <button 
+            className="btn btn-primary"
+            onClick={() => setIsDeployModalOpen(true)}
+          >
+            <Rocket size={14} />
+            <span>New Deployment</span>
+          </button>
+        </div>
+      </div>
 
       {/* High-level Metric Cards Row */}
       <MetricCards summary={summary} />
 
-      {/* Tabs Navigation */}
+      {/* Tabs Navigation - Simplified & High Contrast */}
       <div className="tab-nav">
         <button
           className={`tab-btn ${activeTab === 'deployments' ? 'active' : ''}`}
           onClick={() => setActiveTab('deployments')}
         >
-          <Layers size={16} />
-          <span>Deployments & Releases</span>
+          <Rocket size={16} />
+          <span>Deployments</span>
         </button>
 
         <button
@@ -161,10 +242,10 @@ export default function App() {
           className={`tab-btn ${activeTab === 'incidents' ? 'active' : ''}`}
           onClick={() => setActiveTab('incidents')}
         >
-          <AlertOctagon size={16} />
+          <ShieldCheck size={16} />
           <span>Incidents & Policies</span>
           {summary?.counts?.openIncidents > 0 && (
-            <span className="badge badge-critical" style={{ padding: '1px 6px', fontSize: '0.68rem' }}>
+            <span className="badge badge-critical" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>
               {summary.counts.openIncidents}
             </span>
           )}
@@ -177,18 +258,10 @@ export default function App() {
           <FlaskConical size={16} />
           <span>Failure Simulation Lab</span>
           {summary?.simulatedFault && (
-            <span className="badge badge-warning" style={{ padding: '1px 6px', fontSize: '0.68rem' }}>
-              ACTIVE
+            <span className="badge badge-warning" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>
+              FAULT INJECTED
             </span>
           )}
-        </button>
-
-        <button
-          className={`tab-btn ${activeTab === 'audit' ? 'active' : ''}`}
-          onClick={() => setActiveTab('audit')}
-        >
-          <FileCheck2 size={16} />
-          <span>Audit Trail</span>
         </button>
 
         <button
@@ -197,6 +270,14 @@ export default function App() {
         >
           <Terminal size={16} />
           <span>Live Logs</span>
+        </button>
+
+        <button
+          className={`tab-btn ${activeTab === 'audit' ? 'active' : ''}`}
+          onClick={() => setActiveTab('audit')}
+        >
+          <FileCheck2 size={16} />
+          <span>Audit Trail</span>
         </button>
       </div>
 

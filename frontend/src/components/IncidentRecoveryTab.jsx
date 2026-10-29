@@ -22,7 +22,7 @@ export default function IncidentRecoveryTab({
         <div className="panel-header">
           <div>
             <div className="panel-title">
-              <Sliders size={20} color="#6366f1" />
+              <Sliders size={20} color="#4f46e5" />
               <span>Policy-Driven Recovery Configuration</span>
             </div>
             <div className="panel-description">
@@ -48,10 +48,10 @@ export default function IncidentRecoveryTab({
               {policies.map((pol) => (
                 <tr key={pol.id || pol.name}>
                   <td><strong>{pol.name}</strong></td>
-                  <td><code className="mono">{pol.trigger_rule}</code></td>
+                  <td><code className="mono" style={{ color: '#4f46e5' }}>{pol.trigger_rule}</code></td>
                   <td>{pol.threshold_value}</td>
                   <td>
-                    <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.3)' }}>
+                    <span className="badge" style={{ background: '#eef2ff', color: '#4338ca', border: '1px solid #c7d2fe' }}>
                       {pol.action_type}
                     </span>
                   </td>
@@ -71,7 +71,7 @@ export default function IncidentRecoveryTab({
         <div className="panel-header">
           <div>
             <div className="panel-title">
-              <AlertOctagon size={20} color="#f43f5e" />
+              <AlertOctagon size={20} color="#ef4444" />
               <span>Incident Records & Recovery Audit</span>
             </div>
             <div className="panel-description">
@@ -85,71 +85,61 @@ export default function IncidentRecoveryTab({
             <div
               key={inc.id || inc.incident_code}
               style={{
-                background: 'rgba(255, 255, 255, 0.02)',
+                background: 'var(--bg-card-subtle)',
                 border: '1px solid var(--border-subtle)',
-                borderLeft: inc.status === 'RESOLVED' ? '4px solid #10b981' : '4px solid #f43f5e',
+                borderLeft: inc.status === 'RESOLVED' ? '4px solid #10b981' : '4px solid #ef4444',
                 borderRadius: '8px',
                 padding: '18px 20px',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span className="mono" style={{ fontWeight: 700, color: '#818cf8', fontSize: '0.9rem' }}>
+                  <span className="mono" style={{ fontWeight: 700, color: '#4f46e5', fontSize: '0.9rem' }}>
                     {inc.incident_code}
                   </span>
                   <span className={`badge ${inc.status === 'RESOLVED' ? 'badge-resolved' : 'badge-critical'}`}>
                     {inc.status}
                   </span>
-                  <span className="badge badge-warning">{inc.severity}</span>
+                  <span className="badge" style={{ background: '#fee2e2', color: '#991b1b', border: '1px solid #fecaca' }}>
+                    {inc.severity}
+                  </span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Clock size={13} />
                   <span>Detected: {new Date(inc.detected_at).toLocaleString()}</span>
                 </div>
               </div>
 
-              <div style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-main)', marginBottom: '4px' }}>
                 {inc.title}
               </div>
 
-              <div style={{ fontSize: '0.84rem', color: '#cbd5e1', marginBottom: '12px' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
                 {inc.description}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', background: 'rgba(0, 0, 0, 0.25)', padding: '12px', borderRadius: '6px', fontSize: '0.8rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', background: 'var(--bg-surface)', padding: '12px', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
                 <div>
-                  <span style={{ color: '#94a3b8' }}>Affected Version: </span>
-                  <strong className="mono" style={{ color: '#fb7185' }}>{inc.affected_version}</strong>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Root Cause</div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#dc2626' }}>{inc.root_cause}</div>
                 </div>
+
                 <div>
-                  <span style={{ color: '#94a3b8' }}>Recovery Target: </span>
-                  <strong className="mono" style={{ color: '#34d399' }}>{inc.target_recovery_version || 'v1.0.1'}</strong>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Affected Release</div>
+                  <div className="mono" style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)' }}>{inc.affected_version}</div>
                 </div>
+
                 <div>
-                  <span style={{ color: '#94a3b8' }}>Remediation: </span>
-                  <span style={{ color: '#38bdf8' }}>{inc.recovery_action_taken || 'Automated rollback initiated'}</span>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Recovery Target</div>
+                  <div className="mono" style={{ fontSize: '0.82rem', fontWeight: 600, color: '#059669' }}>{inc.target_recovery_version}</div>
+                </div>
+
+                <div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Remediation Outcome</div>
+                  <div style={{ fontSize: '0.82rem', color: '#059669', fontWeight: 600 }}>{inc.recovery_action_taken}</div>
                 </div>
               </div>
-
-              {inc.status !== 'RESOLVED' && (
-                <div style={{ marginTop: '12px', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                  <button
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-                    onClick={() => onResolveIncident(inc.id || inc.incident_code)}
-                  >
-                    Mark as Resolved
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    style={{ fontSize: '0.78rem', padding: '6px 12px' }}
-                    onClick={() => onRollbackClick(inc.target_recovery_version || 'v1.0.1')}
-                  >
-                    <RotateCcw size={12} />
-                    <span>Trigger Rollback ({inc.target_recovery_version || 'v1.0.1'})</span>
-                  </button>
-                </div>
-              )}
             </div>
           ))}
         </div>

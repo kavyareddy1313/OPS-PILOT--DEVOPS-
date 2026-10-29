@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Rocket, GitCommit, CheckCircle2 } from 'lucide-react';
+import { X, Rocket } from 'lucide-react';
 
 export default function DeployModal({ isOpen, onClose, onDeploy }) {
   const [version, setVersion] = useState('v1.0.3');
@@ -34,10 +34,10 @@ export default function DeployModal({ isOpen, onClose, onDeploy }) {
       <div className="modal-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Rocket size={20} color="#6366f1" />
-            <h3 style={{ fontSize: '1.2rem', color: '#f8fafc' }}>Deploy New Container Release</h3>
+            <Rocket size={20} color="#4f46e5" />
+            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-main)' }}>Deploy New Container Release</h3>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
