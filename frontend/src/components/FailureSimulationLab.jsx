@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   FlaskConical, 
   Flame, 
   AlertTriangle, 
   Timer, 
   RefreshCw, 
-  CheckCircle2, 
-  ArrowRight,
   ShieldCheck, 
-  Zap,
-  Activity
+  Zap 
 } from 'lucide-react';
 
 export default function FailureSimulationLab({ 
@@ -24,89 +21,81 @@ export default function FailureSimulationLab({
   const threshold = health.failureThreshold || 3;
   const simulatedFault = summary?.simulatedFault;
 
-  const handleSimulate = async (type, reason) => {
-    await onSimulateFault(type, reason);
-  };
-
-  const handleReset = async () => {
-    await onResetFault();
-  };
-
   return (
     <div className="content-section">
-      {/* Friendly Banner with Target and Status */}
-      <div className="glass-panel" style={{ borderLeft: '4px solid #4f46e5' }}>
-        <div className="panel-header" style={{ marginBottom: '14px' }}>
+      {/* Friendly Guide Banner */}
+      <div className="glass-panel" style={{ borderLeft: '3px solid var(--primary)' }}>
+        <div className="panel-header" style={{ marginBottom: '12px' }}>
           <div>
             <div className="panel-title">
-              <FlaskConical size={22} color="#4f46e5" />
-              <span>Controlled Chaos & Self-Healing Simulation Lab</span>
+              <FlaskConical size={18} color="var(--primary)" />
+              <span>Self-Healing Failure Simulation Lab</span>
             </div>
             <div className="panel-description">
-              Safely inject controlled microservice faults into the target workload to watch OpsPilot detect anomalies and trigger an autonomous rollback in real time.
+              Test automated policy recovery: click a fault button below to watch OpsPilot detect consecutive probe failures and autonomously execute a zero-downtime rollback.
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div className={`status-badge ${isHealthy ? 'healthy' : 'degraded'}`}>
               <div className={`pulse-dot ${isHealthy ? 'green' : 'red'}`} />
               <span>{isHealthy ? 'Workload Normal' : `Fault Active: ${simulatedFault?.type || 'Degraded'}`}</span>
             </div>
 
-            <button className="btn btn-secondary" onClick={handleReset} disabled={isLoading}>
-              <RefreshCw size={14} className={isLoading ? 'spin' : ''} />
+            <button className="btn btn-secondary" onClick={onResetFault} disabled={isLoading}>
+              <RefreshCw size={13} className={isLoading ? 'spin' : ''} />
               <span>Reset to Healthy</span>
             </button>
           </div>
         </div>
 
-        {/* Live Threshold Tracker Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--bg-card-subtle)', padding: '12px 18px', borderRadius: '8px', border: '1px solid var(--border-subtle)', flexWrap: 'wrap' }}>
-          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-            Target: <code>http://demo-service:5002/healthz</code>
+        {/* Live Threshold Tracker */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--bg-card-subtle)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-subtle)', flexWrap: 'wrap', fontSize: '0.8rem' }}>
+          <div>
+            <span style={{ color: 'var(--text-muted)' }}>Target Endpoint:</span> <code>http://demo-service:5002/healthz</code>
           </div>
           <div style={{ height: '14px', width: '1px', background: 'var(--border-subtle)' }} />
-          <div style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Consecutive Probe Failures:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: 'var(--text-muted)' }}>Consecutive Failures:</span>
             <span 
               className="mono" 
               style={{ 
                 fontWeight: 700, 
-                padding: '2px 8px', 
+                padding: '1px 7px', 
                 borderRadius: '4px',
-                background: consecutive >= threshold ? '#fee2e2' : '#dcfce7',
-                color: consecutive >= threshold ? '#dc2626' : '#15803d',
+                background: consecutive >= threshold ? 'var(--rose-bg)' : 'var(--emerald-bg)',
+                color: consecutive >= threshold ? 'var(--rose-text)' : 'var(--emerald-text)',
               }}
             >
               {consecutive} / {threshold}
             </span>
           </div>
           <div style={{ height: '14px', width: '1px', background: 'var(--border-subtle)' }} />
-          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-            Recovery Policy: <strong style={{ color: '#4f46e5' }}>AUTOMATED_ROLLBACK</strong> (Triggers at &gt;= 3 failures)
+          <div>
+            <span style={{ color: 'var(--text-muted)' }}>Policy:</span> <strong style={{ color: 'var(--primary)' }}>AUTOMATED_ROLLBACK</strong> (Trigger at &gt;= 3 fails)
           </div>
         </div>
       </div>
 
-      {/* Simulation Trigger Cards */}
+      {/* 4 Action Cards */}
       <div className="lab-grid">
-        {/* Card 1: Probe Failure */}
+        {/* Card 1: Probe 500 Failure */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #ef4444' }}>
           <div>
             <div className="lab-card-title">
-              <Flame size={18} color="#ef4444" />
+              <Flame size={16} color="#ef4444" />
               <span>1. Liveness Probe Failure</span>
             </div>
             <div className="lab-card-desc">
-              Forces <code>/healthz</code> to return HTTP 500. Simulates severe thread pool exhaustion. OpsPilot detects 3 consecutive failures and triggers auto-rollback.
+              Forces <code>/healthz</code> to return HTTP 500. Simulates severe thread lock. OpsPilot detects 3 failures and executes automated rollback within 15 seconds.
             </div>
           </div>
           <button
             className="btn btn-danger"
-            onClick={() => handleSimulate('probe_failure', 'Simulated 500 internal probe failure')}
+            onClick={() => onSimulateFault('probe_failure', 'Simulated 500 internal probe failure')}
             disabled={isLoading}
           >
-            <span>Simulate Probe Failure (HTTP 500)</span>
+            <span>Simulate Probe Failure</span>
           </button>
         </div>
 
@@ -114,17 +103,17 @@ export default function FailureSimulationLab({
         <div className="lab-action-card" style={{ borderTop: '3px solid #f59e0b' }}>
           <div>
             <div className="lab-card-title">
-              <AlertTriangle size={18} color="#f59e0b" />
+              <AlertTriangle size={16} color="#f59e0b" />
               <span>2. 5xx Error Rate Spike (85%)</span>
             </div>
             <div className="lab-card-desc">
-              Simulates database connection pool exhaustion. 85% of order requests fail with HTTP 500, triggering error rate anomaly alerts.
+              Simulates database connection pool exhaustion. 85% of order requests fail with HTTP 500, triggering anomaly thresholds.
             </div>
           </div>
           <button
             className="btn btn-secondary"
             style={{ color: '#d97706', borderColor: '#fde68a' }}
-            onClick={() => handleSimulate('error_spike', 'Simulated DB connection pool exhaustion (85% errors)')}
+            onClick={() => onSimulateFault('error_spike', 'Simulated DB connection pool exhaustion (85% errors)')}
             disabled={isLoading}
           >
             <span>Simulate Error Spike</span>
@@ -135,37 +124,37 @@ export default function FailureSimulationLab({
         <div className="lab-action-card" style={{ borderTop: '3px solid #7c3aed' }}>
           <div>
             <div className="lab-card-title">
-              <Timer size={18} color="#7c3aed" />
+              <Timer size={16} color="#7c3aed" />
               <span>3. Latency Spike (1200ms)</span>
             </div>
             <div className="lab-card-desc">
-              Adds artificial 1200ms delay to all request processing. Simulates slow microservice calls, locking, or network congestion.
+              Injects artificial 1200ms delay into order transactions. Tests slow response detection and SLA monitoring.
             </div>
           </div>
           <button
             className="btn btn-secondary"
             style={{ color: '#7c3aed', borderColor: '#ddd6fe' }}
-            onClick={() => handleSimulate('latency', 'Simulated 1200ms artificial delay')}
+            onClick={() => onSimulateFault('latency', 'Simulated 1200ms artificial delay')}
             disabled={isLoading}
           >
             <span>Simulate High Latency</span>
           </button>
         </div>
 
-        {/* Card 4: Reset & Self-Heal */}
+        {/* Card 4: Reset to Healthy */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #10b981' }}>
           <div>
             <div className="lab-card-title">
-              <ShieldCheck size={18} color="#10b981" />
-              <span>4. Reset & Self-Heal</span>
+              <ShieldCheck size={16} color="#10b981" />
+              <span>4. Reset & Restore</span>
             </div>
             <div className="lab-card-desc">
-              Deactivates all fault injection switches, resets probe failure counters, and verifies that the workload returns to 100% operational health.
+              Clears all injected faults, resets probe failure counters to 0, and restores normal operational status.
             </div>
           </div>
           <button
             className="btn btn-success"
-            onClick={handleReset}
+            onClick={onResetFault}
             disabled={isLoading}
           >
             <span>Restore Healthy State</span>
@@ -173,36 +162,36 @@ export default function FailureSimulationLab({
         </div>
       </div>
 
-      {/* End-to-End Recovery Flow Visualization */}
+      {/* Autonomous Recovery Life-Cycle Flow */}
       <div className="glass-panel">
-        <div className="panel-title" style={{ marginBottom: '14px' }}>
-          <Zap size={18} color="#4f46e5" />
-          <span>OpsPilot Autonomous Recovery Life-Cycle</span>
+        <div className="panel-title" style={{ marginBottom: '12px', fontSize: '0.98rem' }}>
+          <Zap size={16} color="var(--primary)" />
+          <span>Autonomous Recovery Life-Cycle Flow</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
           {[
-            { step: '1. Fault Injected', desc: 'Simulated 500 error or probe failure active', status: !isHealthy ? 'active' : 'done' },
-            { step: '2. Detection', desc: 'Liveness probe checks fail consecutively', status: consecutive > 0 ? 'active' : 'done' },
-            { step: '3. Policy Evaluation', desc: 'Threshold >= 3 breached', status: consecutive >= threshold ? 'active' : 'done' },
-            { step: '4. Incident Registered', desc: 'Incident code INC-XXXX logged with root cause', status: consecutive >= threshold ? 'active' : 'done' },
-            { step: '5. Automated Rollback', desc: 'Deploys last verified release (v1.0.1)', status: 'done' },
-            { step: '6. Verification', desc: 'Probes return HTTP 200, incident resolved', status: isHealthy ? 'done' : 'pending' },
-          ].map((item, idx) => (
+            { step: '1. Injected', desc: 'Simulated failure triggered', active: !isHealthy },
+            { step: '2. Detection', desc: 'Probe check fails consecutive times', active: consecutive > 0 },
+            { step: '3. Threshold', desc: 'Threshold >= 3 breached', active: consecutive >= threshold },
+            { step: '4. Incident', desc: 'Incident ticket logged with root cause', active: consecutive >= threshold },
+            { step: '5. Auto-Rollback', desc: 'Switches traffic to last verified version', active: true },
+            { step: '6. Verified', desc: 'Probes return HTTP 200 (healthy)', active: isHealthy },
+          ].map((item) => (
             <div
               key={item.step}
               style={{
-                background: item.status === 'active' ? 'var(--rose-bg)' : 'var(--bg-card-subtle)',
-                border: item.status === 'active' ? '1px solid var(--rose-border)' : '1px solid var(--border-subtle)',
+                background: item.active && !isHealthy ? 'var(--rose-bg)' : 'var(--bg-card-subtle)',
+                border: item.active && !isHealthy ? '1px solid var(--rose-border)' : '1px solid var(--border-subtle)',
                 borderRadius: '8px',
-                padding: '12px',
-                fontSize: '0.8rem',
+                padding: '10px',
+                fontSize: '0.78rem',
               }}
             >
-              <div style={{ fontWeight: 700, color: item.status === 'active' ? '#dc2626' : '#4f46e5', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 700, color: item.active && !isHealthy ? 'var(--rose-text)' : 'var(--primary)', marginBottom: '3px' }}>
                 {item.step}
               </div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '0.74rem' }}>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.72rem' }}>
                 {item.desc}
               </div>
             </div>

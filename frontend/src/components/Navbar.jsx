@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
   Compass, 
   Server, 
-  Clock, 
   RotateCcw, 
   PlusCircle, 
   Sun, 
@@ -16,15 +15,6 @@ export default function Navbar({
   theme, 
   onToggleTheme 
 }) {
-  const [time, setTime] = useState(new Date().toLocaleTimeString());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const isHealthy = summary?.health?.isHealthy;
   const openIncidents = summary?.counts?.openIncidents || 0;
 
@@ -32,53 +22,50 @@ export default function Navbar({
     <nav className="navbar">
       <div className="brand-section">
         <div className="brand-logo">
-          <Compass size={24} strokeWidth={2.5} />
+          <Compass size={22} strokeWidth={2.4} />
         </div>
         <div>
-          <div className="brand-title">OpsPilot</div>
-          <div className="brand-subtitle">Automated Deployment & Self-Healing SRE Platform</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="brand-title">OpsPilot</span>
+            <span className="badge badge-active" style={{ fontSize: '0.68rem', padding: '1px 6px' }}>Prod</span>
+          </div>
+          <div className="brand-subtitle">Autonomous DevOps & Self-Healing Platform</div>
         </div>
       </div>
 
       <div className="header-status-group">
         <div className="cluster-pill">
-          <Server size={14} color="#38bdf8" />
+          <Server size={13} color="var(--primary)" />
           <span>k8s: <strong>opspilot-prod</strong></span>
-        </div>
-
-        <div className="cluster-pill">
-          <Clock size={14} color="#94a3b8" />
-          <span className="mono">{time}</span>
         </div>
 
         <div className={`status-badge ${isHealthy ? 'healthy' : 'degraded'}`}>
           <div className={`pulse-dot ${isHealthy ? 'green' : 'red'}`} />
-          <span>{isHealthy ? 'All Systems Healthy' : `Incident Active (${openIncidents})`}</span>
+          <span>{isHealthy ? '100% Operational' : `Incident Active (${openIncidents})`}</span>
         </div>
 
-        {/* Theme Switcher Button */}
+        {/* Theme Toggle Button */}
         <button 
           className="theme-toggle-btn" 
           onClick={onToggleTheme} 
-          title={`Switch to ${theme === 'light' ? 'Dark' : 'Bright'} Mode`}
+          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
         >
-          {theme === 'light' ? <Moon size={14} color="#facc15" /> : <Sun size={14} color="#facc15" />}
-          <span>{theme === 'light' ? 'Dark Mode' : 'Bright Mode'}</span>
+          {theme === 'light' ? <Moon size={14} color="#6366f1" /> : <Sun size={14} color="#facc15" />}
+          <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
         </button>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', gap: '6px' }}>
           <button 
             className="btn btn-secondary" 
-            style={{ padding: '7px 14px', fontSize: '0.8rem', background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', borderColor: 'rgba(255, 255, 255, 0.2)' }}
             onClick={onOpenRollback} 
-            title="Emergency rollback to verified release"
+            title="Rollback workload to verified release"
           >
-            <RotateCcw size={14} color="#f87171" />
+            <RotateCcw size={13} color="#ef4444" />
             <span>Rollback</span>
           </button>
           <button 
             className="btn btn-primary" 
-            style={{ padding: '7px 14px', fontSize: '0.8rem' }}
             onClick={onOpenDeploy}
           >
             <PlusCircle size={14} />

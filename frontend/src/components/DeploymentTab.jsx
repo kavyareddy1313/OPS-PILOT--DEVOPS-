@@ -2,12 +2,11 @@ import React from 'react';
 import { 
   Rocket, 
   RotateCcw, 
-  CheckCircle, 
   GitCommit, 
-  User, 
   Clock, 
   Layers, 
-  ShieldCheck 
+  ShieldCheck,
+  RefreshCw
 } from 'lucide-react';
 
 export default function DeploymentTab({ 
@@ -20,57 +19,54 @@ export default function DeploymentTab({
 
   return (
     <div className="content-section">
-      {/* Active Production Release Card */}
+      {/* Active Workload Summary Card */}
       {active && (
-        <div className="glass-panel" style={{ borderLeft: '4px solid #10b981' }}>
-          <div className="panel-header">
+        <div className="glass-panel" style={{ borderLeft: '3px solid var(--emerald)' }}>
+          <div className="panel-header" style={{ marginBottom: '12px' }}>
             <div>
               <div className="panel-title">
-                <Rocket size={20} color="#10b981" />
-                <span>Currently Active Production Release: {active.release_version}</span>
-                <span className="badge badge-active">ACTIVE IN PRODUCTION</span>
+                <Rocket size={18} color="var(--emerald)" />
+                <span>Active Workload: <strong>{active.release_version}</strong></span>
+                <span className="badge badge-active">Live in Production</span>
               </div>
               <div className="panel-description">
-                Running in Kubernetes cluster namespace <code>opspilot-prod</code> • Liveness & Readiness Probes Passing
+                Running in Kubernetes namespace <code>opspilot-prod</code> • Probes verified healthy
               </div>
             </div>
-            <button className="btn btn-primary" onClick={onOpenDeploy}>
-              <Rocket size={15} />
-              <span>Deploy New Version</span>
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn btn-secondary" onClick={onRefresh} title="Refresh release history">
+                <RefreshCw size={13} />
+                <span>Refresh</span>
+              </button>
+              <button className="btn btn-primary" onClick={onOpenDeploy}>
+                <Rocket size={14} />
+                <span>Deploy New Version</span>
+              </button>
+            </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', background: 'var(--bg-card-subtle)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', background: 'var(--bg-card-subtle)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Git Commit Reference</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px', color: 'var(--text-main)' }}>
-                <GitCommit size={15} color="#4f46e5" />
-                <span className="mono">{active.commit_sha}</span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>({active.commit_message})</span>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Git Commit</div>
+              <div style={{ fontSize: '0.84rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                <GitCommit size={14} color="var(--primary)" />
+                <span className="mono" style={{ color: 'var(--primary)' }}>{active.commit_sha}</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>({active.commit_message})</span>
               </div>
             </div>
 
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Container Image (Registry)</div>
-              <div className="mono" style={{ fontSize: '0.82rem', color: '#0284c7', marginTop: '4px', wordBreak: 'break-all', fontWeight: 500 }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Container Image</div>
+              <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--cyan-text)', marginTop: '3px', wordBreak: 'break-all' }}>
                 {active.image_tag}
               </div>
             </div>
 
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Deployment Time & Deployer</div>
-              <div style={{ fontSize: '0.85rem', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
-                <Clock size={14} color="var(--text-muted)" />
-                <span>{new Date(active.deployed_at).toLocaleString()}</span>
-                <span>by <strong>{active.author}</strong></span>
-              </div>
-            </div>
-
-            <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Cluster Verification</div>
-              <div style={{ fontSize: '0.85rem', color: '#059669', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                <ShieldCheck size={16} />
-                <span>K8s Readiness Probes Passed (3/3 Ready)</span>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Deployed By / Time</div>
+              <div style={{ fontSize: '0.8rem', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Clock size={13} color="var(--text-muted)" />
+                <span>{new Date(active.deployed_at).toLocaleString()} by <strong>{active.author}</strong></span>
               </div>
             </div>
           </div>
@@ -82,16 +78,13 @@ export default function DeploymentTab({
         <div className="panel-header">
           <div>
             <div className="panel-title">
-              <Layers size={20} color="#4f46e5" />
-              <span>Deployment & Release History</span>
+              <Layers size={18} color="var(--primary)" />
+              <span>Release History & Rollback Targets</span>
             </div>
             <div className="panel-description">
-              Audit-ready history of deployed versions, commit hashes, target images, and recovery actions
+              Auditable list of deployed releases. Click "Rollback Here" on any past version to switch traffic instantly.
             </div>
           </div>
-          <button className="btn btn-secondary" onClick={onRefresh}>
-            Refresh Releases
-          </button>
         </div>
 
         <div className="table-wrapper">
@@ -101,7 +94,6 @@ export default function DeploymentTab({
                 <th>Version</th>
                 <th>Commit SHA</th>
                 <th>Commit Message</th>
-                <th>Image Tag</th>
                 <th>Deployed At</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
@@ -113,27 +105,22 @@ export default function DeploymentTab({
                 return (
                   <tr key={dep.id || dep.release_version}>
                     <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="mono" style={{ fontWeight: 700, fontSize: '0.9rem', color: isActive ? '#059669' : 'var(--text-main)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="mono" style={{ fontWeight: 700, fontSize: '0.88rem', color: isActive ? 'var(--emerald)' : 'var(--text-main)' }}>
                           {dep.release_version}
                         </span>
                         {isActive && <span className="badge badge-active">ACTIVE</span>}
                       </div>
                     </td>
                     <td>
-                      <code className="mono" style={{ fontSize: '0.8rem', color: '#4f46e5', background: 'var(--bg-card-subtle)', padding: '2px 6px', borderRadius: '4px' }}>
+                      <code className="mono" style={{ fontSize: '0.78rem', color: 'var(--primary)', background: 'var(--bg-card-subtle)', padding: '2px 6px', borderRadius: '4px' }}>
                         {dep.commit_sha}
                       </code>
                     </td>
                     <td>
-                      <span style={{ color: 'var(--text-main)', fontSize: '0.85rem' }}>{dep.commit_message}</span>
+                      <span style={{ fontSize: '0.82rem' }}>{dep.commit_message}</span>
                     </td>
-                    <td>
-                      <span className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                        {dep.image_tag}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                    <td style={{ fontSize: '0.78rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                       {new Date(dep.deployed_at).toLocaleString()}
                     </td>
                     <td>
@@ -153,13 +140,13 @@ export default function DeploymentTab({
                           className="btn btn-secondary"
                           style={{ padding: '4px 10px', fontSize: '0.75rem' }}
                           onClick={() => onRollbackClick(dep.release_version)}
-                          title={`Rollback production workload to ${dep.release_version}`}
+                          title={`Rollback to ${dep.release_version}`}
                         >
                           <RotateCcw size={12} color="#dc2626" />
                           <span>Rollback Here</span>
                         </button>
                       ) : (
-                        <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 600 }}>Active Version</span>
+                        <span style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600 }}>Current Live Release</span>
                       )}
                     </td>
                   </tr>

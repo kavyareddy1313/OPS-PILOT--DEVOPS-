@@ -30,10 +30,7 @@ import {
   ShieldCheck, 
   FlaskConical, 
   FileCheck2, 
-  Terminal,
-  Zap,
-  CheckCircle2,
-  AlertTriangle
+  Terminal 
 } from 'lucide-react';
 
 export default function App() {
@@ -141,7 +138,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Top Navigation Bar with Theme Toggle */}
+      {/* 1. Clean Top Navbar */}
       <Navbar
         summary={summary}
         onOpenDeploy={() => setIsDeployModalOpen(true)}
@@ -155,78 +152,16 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
 
-      {/* Quick Overview Hero Bar - Simple & User-Friendly */}
-      <div className="hero-overview-bar">
-        <div className="hero-overview-left">
-          <div className="hero-stat">
-            <span className="hero-stat-label">Active Workload</span>
-            <span className="hero-stat-val">
-              <span className="badge badge-active" style={{ fontSize: '0.75rem' }}>Production</span>
-              <span>{summary?.activeRelease?.version || 'v1.0.2'}</span>
-            </span>
-          </div>
-
-          <div className="hero-stat">
-            <span className="hero-stat-label">Health & Probes</span>
-            <span className="hero-stat-val" style={{ color: summary?.health?.isHealthy ? '#059669' : '#dc2626' }}>
-              {summary?.health?.isHealthy ? (
-                <>
-                  <CheckCircle2 size={16} />
-                  <span>Healthy (0 Failures)</span>
-                </>
-              ) : (
-                <>
-                  <AlertTriangle size={16} />
-                  <span>Degraded ({summary?.health?.consecutiveFailures}/3)</span>
-                </>
-              )}
-            </span>
-          </div>
-
-          <div className="hero-stat">
-            <span className="hero-stat-label">Self-Healing Policy</span>
-            <span className="hero-stat-val" style={{ color: '#4f46e5' }}>
-              <ShieldCheck size={16} />
-              <span>Auto-Rollback Active</span>
-            </span>
-          </div>
-
-          <div className="hero-stat">
-            <span className="hero-stat-label">Target Service</span>
-            <span className="hero-stat-val" style={{ fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>
-              <code>demo-service:5002</code>
-            </span>
-          </div>
-        </div>
-
-        <div className="hero-overview-right">
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setActiveTab('simulation')}
-          >
-            <FlaskConical size={14} color="#7c3aed" />
-            <span>Chaos Test Lab</span>
-          </button>
-          <button 
-            className="btn btn-primary"
-            onClick={() => setIsDeployModalOpen(true)}
-          >
-            <Rocket size={14} />
-            <span>New Deployment</span>
-          </button>
-        </div>
-      </div>
-
-      {/* High-level Metric Cards Row */}
+      {/* 2. Unified 4-Metric Strip (At-a-Glance Clarity) */}
       <MetricCards summary={summary} />
 
-      {/* Tabs Navigation - Simplified & High Contrast */}
+      {/* 3. Segmented Tabs Navigation */}
       <div className="tab-nav">
         <button
           className={`tab-btn ${activeTab === 'deployments' ? 'active' : ''}`}
           onClick={() => setActiveTab('deployments')}
         >
-          <Rocket size={16} />
+          <Rocket size={15} />
           <span>Deployments</span>
         </button>
 
@@ -234,32 +169,32 @@ export default function App() {
           className={`tab-btn ${activeTab === 'metrics' ? 'active' : ''}`}
           onClick={() => setActiveTab('metrics')}
         >
-          <Activity size={16} />
+          <Activity size={15} />
           <span>Health & Metrics</span>
-        </button>
-
-        <button
-          className={`tab-btn ${activeTab === 'incidents' ? 'active' : ''}`}
-          onClick={() => setActiveTab('incidents')}
-        >
-          <ShieldCheck size={16} />
-          <span>Incidents & Policies</span>
-          {summary?.counts?.openIncidents > 0 && (
-            <span className="badge badge-critical" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>
-              {summary.counts.openIncidents}
-            </span>
-          )}
         </button>
 
         <button
           className={`tab-btn ${activeTab === 'simulation' ? 'active' : ''}`}
           onClick={() => setActiveTab('simulation')}
         >
-          <FlaskConical size={16} />
-          <span>Failure Simulation Lab</span>
+          <FlaskConical size={15} />
+          <span>Chaos & Self-Healing Lab</span>
           {summary?.simulatedFault && (
-            <span className="badge badge-warning" style={{ padding: '1px 7px', fontSize: '0.68rem' }}>
-              FAULT INJECTED
+            <span className="badge badge-warning" style={{ padding: '1px 6px', fontSize: '0.65rem' }}>
+              ACTIVE
+            </span>
+          )}
+        </button>
+
+        <button
+          className={`tab-btn ${activeTab === 'incidents' ? 'active' : ''}`}
+          onClick={() => setActiveTab('incidents')}
+        >
+          <ShieldCheck size={15} />
+          <span>Policies & Incidents</span>
+          {summary?.counts?.openIncidents > 0 && (
+            <span className="badge badge-critical" style={{ padding: '1px 6px', fontSize: '0.65rem' }}>
+              {summary.counts.openIncidents}
             </span>
           )}
         </button>
@@ -268,7 +203,7 @@ export default function App() {
           className={`tab-btn ${activeTab === 'logs' ? 'active' : ''}`}
           onClick={() => setActiveTab('logs')}
         >
-          <Terminal size={16} />
+          <Terminal size={15} />
           <span>Live Logs</span>
         </button>
 
@@ -276,12 +211,12 @@ export default function App() {
           className={`tab-btn ${activeTab === 'audit' ? 'active' : ''}`}
           onClick={() => setActiveTab('audit')}
         >
-          <FileCheck2 size={16} />
+          <FileCheck2 size={15} />
           <span>Audit Trail</span>
         </button>
       </div>
 
-      {/* Active Tab View */}
+      {/* 4. Active Tab Content */}
       {activeTab === 'deployments' && (
         <DeploymentTab
           deployments={deployments}
@@ -298,6 +233,15 @@ export default function App() {
         />
       )}
 
+      {activeTab === 'simulation' && (
+        <FailureSimulationLab
+          summary={summary}
+          onSimulateFault={handleSimulate}
+          onResetFault={handleReset}
+          isLoading={isLoading}
+        />
+      )}
+
       {activeTab === 'incidents' && (
         <IncidentRecoveryTab
           incidents={incidents}
@@ -310,25 +254,16 @@ export default function App() {
         />
       )}
 
-      {activeTab === 'simulation' && (
-        <FailureSimulationLab
-          summary={summary}
-          onSimulateFault={handleSimulate}
-          onResetFault={handleReset}
-          isLoading={isLoading}
+      {activeTab === 'logs' && (
+        <LiveLogsTab
+          logs={logs}
+          onRefresh={loadData}
         />
       )}
 
       {activeTab === 'audit' && (
         <AuditTrailTab
           auditLogs={auditLogs}
-          onRefresh={loadData}
-        />
-      )}
-
-      {activeTab === 'logs' && (
-        <LiveLogsTab
-          logs={logs}
           onRefresh={loadData}
         />
       )}
