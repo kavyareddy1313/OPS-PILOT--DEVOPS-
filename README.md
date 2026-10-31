@@ -36,35 +36,35 @@ OpsPilot bridges the gap between CI/CD deployment pipelines and automated produc
 
 ```mermaid
 flowchart TD
-    subgraph Clients["Users & SRE Engineers"]
+    subgraph Clients["Users and SRE Engineers"]
         Operator["👩‍💻 DevOps / SRE Operator"]
     end
 
-    subgraph Frontend["Frontend Console (:3000)"]
-        UI["OpsPilot React Dashboard\n(Vite + Lucide Icons + Clean UI)"]
+    subgraph Frontend["Frontend Console :3000"]
+        UI["OpsPilot React Dashboard<br/>Vite + Clean UI"]
     end
 
-    subgraph ControlPlane["Control Plane (:5001)"]
+    subgraph ControlPlane["Control Plane :5001"]
         API["Express REST API"]
-        PolicyEngine["Policy & Recovery Engine\n(Probe Evaluator + Auto-Rollback)"]
-        PromRegistry["Prometheus Metrics Exporter (/metrics)"]
-        Postgres["PostgreSQL / Resilient Datastore"]
+        PolicyEngine["Policy & Recovery Engine<br/>Probe Evaluator & Auto-Rollback"]
+        PromRegistry["Prometheus Exporter"]
+        Postgres[("PostgreSQL Database")]
     end
 
-    subgraph Workload["Target Monitored Workload (:5002)"]
-        DemoService["Target Microservice (demo-service)\n(Orders API + Fault Injection Engine)"]
+    subgraph Workload["Target Monitored Workload :5002"]
+        DemoService["Target Microservice<br/>Orders API & Fault Injection"]
     end
 
     subgraph Observability["Observability Stack"]
-        Prometheus["Prometheus Server (:9090)"]
-        Grafana["Grafana Dashboards (:3001)"]
+        Prometheus["Prometheus Server :9090"]
+        Grafana["Grafana Dashboards :3001"]
     end
 
-    Operator -->|Manage & Monitor| UI
-    UI -->|REST API / Polling| API
-    PolicyEngine -->|Active Health Probes (5s loop)| DemoService
+    Operator -->|Manage and Monitor| UI
+    UI -->|REST API and Polling| API
+    PolicyEngine -->|Active Health Probes every 5s| DemoService
     PolicyEngine -->|Trigger Autonomous Rollback| API
-    API -->|Deployments & Audit Records| Postgres
+    API -->|Deployments and Audit Records| Postgres
     Prometheus -->|Scrape Metrics| PromRegistry
     Prometheus -->|Scrape Metrics| DemoService
     Grafana -->|Visualize Dashboards| Prometheus
