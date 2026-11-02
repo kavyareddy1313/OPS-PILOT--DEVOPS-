@@ -142,6 +142,28 @@ async function initDb() {
       // Test connection
       const client = await pool.connect();
       console.log('Connected successfully to PostgreSQL database.');
+
+      // Check if schema needs initialization
+      try {
+        const checkTable = await client.query("SELECT to_regclass('public.deployments')");
+        if (!checkTable.rows[0]?.to_regclass) {
+          console.log('Deployments table not found. Auto-applying schema and seed data...');
+          const fs = require('fs');
+          const path = require('path');
+          const schemaPath = path.join(__dirname, '../db/schema.sql');
+          const seedsPath = path.join(__dirname, '../db/seeds.sql');
+          if (fs.existsSync(schemaPath)) {
+            await client.query(fs.readFileSync(schemaPath, 'utf8'));
+          }
+          if (fs.existsSync(seedsPath)) {
+            await client.query(fs.readFileSync(seedsPath, 'utf8'));
+          }
+          console.log('Database schema and seeds auto-initialized successfully.');
+        }
+      } catch (migrationErr) {
+        console.warn('Auto-migration notice:', migrationErr.message);
+      }
+
       client.release();
       useFallback = false;
       return;

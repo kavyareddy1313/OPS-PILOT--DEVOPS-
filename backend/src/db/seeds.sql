@@ -18,7 +18,7 @@ VALUES
 ('INC-1001', 'CRITICAL', 'Simulated Health Probe Exhaustion', 'Readiness & liveness probes returned HTTP 500 continuously.', 'Memory leak in mock cache subsystem under load.', 'v1.0.1-rc2', 'v1.0.1', 'RESOLVED', 'Rollback to v1.0.1 executed in 38 seconds. Probes verified healthy.', NOW() - INTERVAL '6 hours', NOW() - INTERVAL '5 hours 59 minutes', true)
 ON CONFLICT (incident_code) DO NOTHING;
 
-INSERT INTO audit_logs (event_type, actor, details_json, created_at)
+INSERT INTO audit_logs (event_type, actor, details, created_at)
 VALUES
 ('POLICY_CREATED', 'system', '{"policy": "Critical Health Probe Failure", "action": "AUTOMATED_ROLLBACK"}', NOW() - INTERVAL '3 days'),
 ('DEPLOYMENT_COMPLETED', 'github-actions', '{"version": "v1.0.2", "commit": "a8f3b21", "status": "HEALTHY"}', NOW() - INTERVAL '2 hours'),
