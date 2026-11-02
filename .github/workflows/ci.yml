@@ -93,3 +93,10 @@ jobs:
             python3 -c "import yaml; list(yaml.safe_load_all(open('$f')))" || exit 1
           done
 
+      - name: Validate Ansible Playbook Syntax
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install ansible-core
+          cd ansible
+          ansible-playbook -i inventory.ini playbook.yml --syntax-check
+

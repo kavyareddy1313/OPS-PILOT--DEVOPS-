@@ -19,6 +19,7 @@
         msg: "Preparing environment on OS {{ ansible_distribution | default(ansible_os_family) }} for OpsPilot Platform"
 
     - name: 2. Ensure OpsPilot Directory Hierarchy Exists
+      become: yes
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
@@ -31,6 +32,7 @@
       ignore_errors: yes
 
     - name: 3. Configure Container Daemon Log Rotation Policy
+      become: yes
       ansible.builtin.copy:
         dest: /etc/docker/daemon.json
         content: |
@@ -66,6 +68,7 @@
       loop: "{{ tool_check.results }}"
 
     - name: 6. Verify Kernel Parameters (when running on Linux)
+      become: yes
       ansible.posix.sysctl:
         name: "{{ item.key }}"
         value: "{{ item.value }}"
