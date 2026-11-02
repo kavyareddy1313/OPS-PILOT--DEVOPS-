@@ -16,7 +16,7 @@
   tasks:
     - name: 1. Display Environment Information
       ansible.builtin.debug:
-        msg: "Preparing environment on OS {{ ansible_distribution | default(ansible_os_family) }} for OpsPilot Platform"
+        msg: "Preparing environment on OS {{ ansible_facts['distribution'] | default(ansible_facts['os_family']) }} for OpsPilot Platform"
 
     - name: 2. Ensure OpsPilot Directory Hierarchy Exists
       become: yes
@@ -58,6 +58,7 @@
       register: tool_check
       failed_when: false
       changed_when: false
+      check_mode: no
       loop:
         - docker
         - kubectl
@@ -75,7 +76,7 @@
         state: present
         reload: yes
       loop: "{{ sysctl_config | dict2items }}"
-      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+      when: ansible_facts['os_family'] == 'Debian' or ansible_facts['os_family'] == 'RedHat'
       ignore_errors: yes
 
     - name: 7. Output Final Status
