@@ -19,7 +19,6 @@ export default function DeploymentTab({
 
   return (
     <div className="content-section">
-      {/* Active Workload Summary Card */}
       {active && (
         <div className="glass-panel" style={{ borderLeft: '3px solid var(--emerald)' }}>
           <div className="panel-header" style={{ marginBottom: '12px' }}>
@@ -73,7 +72,6 @@ export default function DeploymentTab({
         </div>
       )}
 
-      {/* Deployment History Table */}
       <div className="glass-panel">
         <div className="panel-header">
           <div>

@@ -23,7 +23,6 @@ export default function FailureSimulationLab({
 
   return (
     <div className="content-section">
-      {/* Friendly Guide Banner */}
       <div className="glass-panel" style={{ borderLeft: '3px solid var(--primary)' }}>
         <div className="panel-header" style={{ marginBottom: '12px' }}>
           <div>
@@ -49,7 +48,6 @@ export default function FailureSimulationLab({
           </div>
         </div>
 
-        {/* Live Threshold Tracker */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--bg-card-subtle)', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-subtle)', flexWrap: 'wrap', fontSize: '0.8rem' }}>
           <div>
             <span style={{ color: 'var(--text-muted)' }}>Target Endpoint:</span> <code>http://demo-service:5002/healthz</code>
@@ -77,9 +75,7 @@ export default function FailureSimulationLab({
         </div>
       </div>
 
-      {/* 4 Action Cards */}
       <div className="lab-grid">
-        {/* Card 1: Probe 500 Failure */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #ef4444' }}>
           <div>
             <div className="lab-card-title">
@@ -99,7 +95,6 @@ export default function FailureSimulationLab({
           </button>
         </div>
 
-        {/* Card 2: 5xx Error Rate Spike */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #f59e0b' }}>
           <div>
             <div className="lab-card-title">
@@ -120,7 +115,6 @@ export default function FailureSimulationLab({
           </button>
         </div>
 
-        {/* Card 3: High Latency */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #7c3aed' }}>
           <div>
             <div className="lab-card-title">
@@ -141,7 +135,6 @@ export default function FailureSimulationLab({
           </button>
         </div>
 
-        {/* Card 4: Reset to Healthy */}
         <div className="lab-action-card" style={{ borderTop: '3px solid #10b981' }}>
           <div>
             <div className="lab-card-title">
@@ -162,7 +155,6 @@ export default function FailureSimulationLab({
         </div>
       </div>
 
-      {/* Autonomous Recovery Life-Cycle Flow */}
       <div className="glass-panel">
         <div className="panel-title" style={{ marginBottom: '12px', fontSize: '0.98rem' }}>
           <Zap size={16} color="var(--primary)" />

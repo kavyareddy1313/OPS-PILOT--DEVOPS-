@@ -11,7 +11,6 @@ export default function IncidentRecoveryTab({
 }) {
   return (
     <div className="content-section">
-      {/* Recovery Policies Matrix */}
       <div className="glass-panel">
         <div className="panel-header">
           <div>
@@ -60,7 +59,6 @@ export default function IncidentRecoveryTab({
         </div>
       </div>
 
-      {/* Incidents Feed */}
       <div className="glass-panel">
         <div className="panel-header">
           <div>

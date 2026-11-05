@@ -8,13 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Prometheus Metrics Scrape Endpoint
 app.get('/metrics', getPrometheusMetrics);
-
-// Mount API routes
 app.use('/api', apiRoutes);
 
-// Root information endpoint
 app.get('/', (req, res) => {
   res.json({
     platform: 'OpsPilot - Automated Deployment, Health Monitoring & Recovery Platform',
@@ -32,12 +28,10 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 Handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint Not Found' });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('[API Error]', err);
   res.status(500).json({ error: 'Internal Server Error', message: err.message });

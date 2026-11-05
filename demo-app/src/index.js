@@ -11,7 +11,6 @@ const START_TIME = Date.now();
 app.use(cors());
 app.use(express.json());
 
-// --- Prometheus Metrics Configuration ---
 const register = new client.Registry();
 client.collectDefaultMetrics({ register, prefix: 'opspilot_demo_' });
 
@@ -37,28 +36,24 @@ const probeCheckFailuresTotal = new client.Counter({
   registers: [register],
 });
 
-// --- Fault Simulation State ---
 let faultState = {
   isHealthy: true,
   isReady: true,
   errorSpike: false,
-  errorSpikeRate: 0.85, // 85% failure when spike is on
+  errorSpikeRate: 0.85,
   artificialLatencyMs: 0,
   crashLoop: false,
   faultReason: null,
   faultInjectedAt: null,
 };
 
-// Middleware: Request tracking & Artificial Latency
 app.use(async (req, res, next) => {
   const start = Date.now();
 
-  // Artificial latency simulation
   if (faultState.artificialLatencyMs > 0 && !req.path.startsWith('/fault')) {
     await new Promise((resolve) => setTimeout(resolve, faultState.artificialLatencyMs));
   }
 
-  // Intercept response finish for Prometheus tracking
   res.on('finish', () => {
     const duration = (Date.now() - start) / 1000;
     const route = req.route ? req.route.path : req.path;
@@ -73,7 +68,6 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// --- Core Application Routes ---
 app.get('/', (req, res) => {
   res.json({
     name: 'OpsPilot Demo Service (Order Management)',
@@ -89,7 +83,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Simulated business logic
 app.get('/api/orders', (req, res) => {
   if (faultState.errorSpike && Math.random() < faultState.errorSpikeRate) {
     return res.status(500).json({
@@ -110,7 +103,6 @@ app.get('/api/orders', (req, res) => {
   });
 });
 
-// --- Kubernetes Liveness Probe ---
 app.get('/healthz', (req, res) => {
   if (!faultState.isHealthy) {
     probeCheckFailuresTotal.labels('liveness').inc();
@@ -130,7 +122,6 @@ app.get('/healthz', (req, res) => {
   });
 });
 
-// --- Kubernetes Readiness Probe ---
 app.get('/readyz', (req, res) => {
   if (!faultState.isReady || !faultState.isHealthy) {
     probeCheckFailuresTotal.labels('readiness').inc();
@@ -149,7 +140,6 @@ app.get('/readyz', (req, res) => {
   });
 });
 
-// --- Prometheus Metrics Endpoint ---
 app.get('/metrics', async (req, res) => {
   try {
     res.set('Content-Type', register.contentType);
@@ -159,7 +149,6 @@ app.get('/metrics', async (req, res) => {
   }
 });
 
-// --- Fault Injection & Simulation Endpoints ---
 app.get('/fault/status', (req, res) => {
   res.json({
     version: APP_VERSION,
@@ -215,7 +204,6 @@ app.post('/fault/reset', (req, res) => {
   });
 });
 
-// Start server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`[Demo Service] running on port ${PORT} (version: ${APP_VERSION})`);

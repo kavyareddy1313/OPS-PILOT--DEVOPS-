@@ -24,7 +24,6 @@ export default function HealthMetricsTab({ summary, timeSeries }) {
   const svgWidth = 500;
   const svgHeight = 120;
 
-  // Build polyline points
   const latencyPoints = points
     .map((p, index) => {
       const x = (index / (points.length - 1 || 1)) * svgWidth;
@@ -43,9 +42,7 @@ export default function HealthMetricsTab({ summary, timeSeries }) {
 
   return (
     <div className="content-section">
-      {/* 2 Visual Telemetry Charts */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
-        {/* Latency Chart */}
         <div className="glass-panel">
           <div className="panel-header" style={{ marginBottom: '8px' }}>
             <div>
@@ -80,7 +77,6 @@ export default function HealthMetricsTab({ summary, timeSeries }) {
           </div>
         </div>
 
-        {/* 5xx Error Rate Chart */}
         <div className="glass-panel">
           <div className="panel-header" style={{ marginBottom: '8px' }}>
             <div>
@@ -116,7 +112,6 @@ export default function HealthMetricsTab({ summary, timeSeries }) {
         </div>
       </div>
 
-      {/* Kubernetes Pod Matrix */}
       <div className="glass-panel">
         <div className="panel-header">
           <div>

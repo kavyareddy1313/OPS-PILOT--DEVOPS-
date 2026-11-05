@@ -39,7 +39,6 @@ export default function LiveLogsTab({ logs, onRefresh }) {
           </div>
 
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            {/* Search Input */}
             <div style={{ position: 'relative' }}>
               <Search size={14} style={{ position: 'absolute', left: '10px', top: '10px', color: 'var(--text-muted)' }} />
               <input
@@ -52,7 +51,6 @@ export default function LiveLogsTab({ logs, onRefresh }) {
               />
             </div>
 
-            {/* Level Selector */}
             <select
               className="form-input"
               style={{ height: '34px', width: '110px', fontSize: '0.78rem' }}
@@ -66,7 +64,6 @@ export default function LiveLogsTab({ logs, onRefresh }) {
               <option value="CRITICAL">CRITICAL</option>
             </select>
 
-            {/* Pause/Resume Button */}
             <button
               className="btn btn-secondary"
               style={{ height: '34px', padding: '0 12px' }}

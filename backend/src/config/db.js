@@ -139,11 +139,9 @@ async function initDb() {
         connectionTimeoutMillis: 3000,
       });
 
-      // Test connection
       const client = await pool.connect();
       console.log('Connected successfully to PostgreSQL database.');
 
-      // Check if schema needs initialization
       try {
         const checkTable = await client.query("SELECT to_regclass('public.deployments')");
         if (!checkTable.rows[0]?.to_regclass) {
@@ -177,7 +175,6 @@ async function initDb() {
   }
 }
 
-// Unified query executor
 async function query(text, params = []) {
   if (!useFallback && pool) {
     try {
@@ -189,7 +186,6 @@ async function query(text, params = []) {
     }
   }
 
-  // Fallback query routing for standard operations
   const normalized = text.trim().toUpperCase();
 
   if (normalized.includes('FROM DEPLOYMENTS')) {

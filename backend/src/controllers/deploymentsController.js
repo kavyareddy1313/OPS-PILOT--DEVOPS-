@@ -26,7 +26,6 @@ exports.createDeployment = async (req, res) => {
     const version = release_version.trim();
     const sha = commit_sha.trim().substring(0, 7);
 
-    // Deactivate previous active deployment
     db.fallbackStore.deployments.forEach((d) => {
       d.is_active = false;
       if (d.status === 'HEALTHY') d.status = 'ROLLED_BACK';
@@ -51,7 +50,6 @@ exports.createDeployment = async (req, res) => {
 
     db.fallbackStore.deployments.unshift(newDep);
 
-    // Audit log
     db.fallbackStore.audit_logs.unshift({
       id: db.fallbackStore.audit_logs.length + 1,
       event_type: 'DEPLOYMENT_TRIGGERED',

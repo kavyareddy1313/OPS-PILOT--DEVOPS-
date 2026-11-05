@@ -115,10 +115,9 @@ class RecoveryEngine {
   }
 
   async handleUnhealthyThresholdBreached(probeResult) {
-    // Check if an incident is already open for this
     const existingOpenIncident = db.fallbackStore.incidents.find((i) => i.status === 'OPEN' || i.status === 'MITIGATING');
     if (existingOpenIncident) {
-      return; // Already actively mitigating
+      return;
     }
 
     const currentDeployments = db.fallbackStore.deployments;
@@ -145,7 +144,6 @@ class RecoveryEngine {
     db.fallbackStore.incidents.unshift(newIncident);
     this.log('CRITICAL', `Incident ${incidentCode} registered! Violates policy 'Critical Health Probe Failure'. Initiating policy recovery workflow.`);
 
-    // Audit log
     db.fallbackStore.audit_logs.unshift({
       id: db.fallbackStore.audit_logs.length + 1,
       event_type: 'INCIDENT_DETECTED',
@@ -159,14 +157,12 @@ class RecoveryEngine {
       created_at: new Date().toISOString(),
     });
 
-    // Execute Automated Rollback
     await this.executeRollback(knownGoodDeployment.release_version, incidentCode);
   }
 
   async executeRollback(targetVersion, incidentCode = null) {
     this.log('INFO', `[Policy Engine] Executing rollback to verified release: ${targetVersion}`);
 
-    // Update active deployment state
     db.fallbackStore.deployments.forEach((d) => {
       if (d.release_version === targetVersion) {
         d.is_active = true;
@@ -180,17 +176,14 @@ class RecoveryEngine {
       }
     });
 
-    // Call demo service to reset simulated fault state
     try {
       await this.resetDemoAppFault();
     } catch (e) {
-      // Demo app might not be running locally, handled gracefully
     }
 
     this.consecutiveFailures = 0;
     this.activeSimulatedFault = null;
 
-    // Resolve incident if associated
     if (incidentCode) {
       const incident = db.fallbackStore.incidents.find((i) => i.incident_code === incidentCode);
       if (incident) {
@@ -200,7 +193,6 @@ class RecoveryEngine {
       }
     }
 
-    // Record audit event
     db.fallbackStore.audit_logs.unshift({
       id: db.fallbackStore.audit_logs.length + 1,
       event_type: 'AUTOMATED_ROLLBACK_COMPLETED',
@@ -236,7 +228,6 @@ class RecoveryEngine {
     this.activeSimulatedFault = { type, reason, timestamp: new Date().toISOString() };
     this.log('WARN', `Simulating controlled failure: ${type} - ${reason}`);
 
-    // Call demo app if available
     try {
       await new Promise((resolve) => {
         const body = JSON.stringify({ type, reason });
@@ -255,7 +246,6 @@ class RecoveryEngine {
       });
     } catch (e) {}
 
-    // Immediately trigger evaluation
     setTimeout(() => this.runHealthCheck(), 500);
     return { success: true, fault: this.activeSimulatedFault };
   }

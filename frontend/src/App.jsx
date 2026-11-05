@@ -51,7 +51,6 @@ export default function App() {
   const [rollbackTarget, setRollbackTarget] = useState('v1.0.1');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sync theme with document element
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('opspilot_theme', theme);
@@ -61,7 +60,6 @@ export default function App() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  // Load all telemetry & status
   const loadData = useCallback(async () => {
     try {
       const [sumRes, tsRes, depRes, incRes, polRes, audRes, logRes] = await Promise.all([
@@ -86,21 +84,18 @@ export default function App() {
     }
   }, []);
 
-  // Initial fetch and 3.5s auto-poll loop
   useEffect(() => {
     loadData();
     const interval = setInterval(loadData, 3500);
     return () => clearInterval(interval);
   }, [loadData]);
 
-  // Handle Deploy
   const handleDeploy = async (payload) => {
     await createDeployment(payload);
     await loadData();
     setActiveTab('deployments');
   };
 
-  // Handle Rollback
   const handleRollback = async (targetVersion, reason) => {
     await triggerRollback(targetVersion, reason);
     await loadData();
@@ -111,7 +106,6 @@ export default function App() {
     setIsRollbackModalOpen(true);
   };
 
-  // Simulation Lab actions
   const handleSimulate = async (type, reason) => {
     setIsLoading(true);
     try {
@@ -138,7 +132,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* 1. Clean Top Navbar */}
       <Navbar
         summary={summary}
         onOpenDeploy={() => setIsDeployModalOpen(true)}
@@ -152,10 +145,8 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
 
-      {/* 2. Unified 4-Metric Strip (At-a-Glance Clarity) */}
       <MetricCards summary={summary} />
 
-      {/* 3. Segmented Tabs Navigation */}
       <div className="tab-nav">
         <button
           className={`tab-btn ${activeTab === 'deployments' ? 'active' : ''}`}

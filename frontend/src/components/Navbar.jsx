@@ -44,7 +44,6 @@ export default function Navbar({
           <span>{isHealthy ? '100% Operational' : `Incident Active (${openIncidents})`}</span>
         </div>
 
-        {/* Theme Toggle Button */}
         <button 
           className="theme-toggle-btn" 
           onClick={onToggleTheme} 
@@ -54,7 +53,6 @@ export default function Navbar({
           <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
         </button>
 
-        {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '6px' }}>
           <button 
             className="btn btn-secondary" 

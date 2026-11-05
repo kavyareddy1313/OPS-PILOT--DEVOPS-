@@ -2,7 +2,6 @@ const test = require('node:test');
 const assert = require('node:assert');
 const app = require('../src/app');
 
-// Helper to simulate request to Express app
 function makeRequest(path, options = {}) {
   return new Promise((resolve, reject) => {
     const http = require('http');

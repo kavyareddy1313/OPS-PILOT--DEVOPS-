@@ -30,7 +30,6 @@ function generateInitialHistory() {
 
 timeSeriesHistory = generateInitialHistory();
 
-// Periodically append metric point
 setInterval(() => {
   const isDegraded = recoveryEngine.consecutiveFailures > 0 || recoveryEngine.activeSimulatedFault;
   const lastHealth = recoveryEngine.lastHealthCheck;
@@ -55,7 +54,6 @@ setInterval(() => {
   timeSeriesHistory.push(point);
   if (timeSeriesHistory.length > 30) timeSeriesHistory.shift();
 
-  // Update Prometheus gauges
   simulatedCpuPercent.set(point.cpuPercent);
   simulatedMemoryMb.set(point.memoryMb);
   const openIncidents = db.fallbackStore.incidents.filter((i) => i.status !== 'RESOLVED').length;

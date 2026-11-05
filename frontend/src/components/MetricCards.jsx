@@ -17,7 +17,6 @@ export default function MetricCards({ summary }) {
 
   return (
     <div className="metrics-grid">
-      {/* 1. Active Release */}
       <div className="metric-card">
         <div className="metric-header">
           <span>Active Release</span>
@@ -35,7 +34,6 @@ export default function MetricCards({ summary }) {
         </div>
       </div>
 
-      {/* 2. Health & Probe Status */}
       <div className="metric-card">
         <div className="metric-header">
           <span>Workload Health</span>
@@ -59,7 +57,6 @@ export default function MetricCards({ summary }) {
         </div>
       </div>
 
-      {/* 3. Pod Replicas */}
       <div className="metric-card">
         <div className="metric-header">
           <span>Kubernetes Pods</span>
@@ -77,7 +74,6 @@ export default function MetricCards({ summary }) {
         </div>
       </div>
 
-      {/* 4. Request Latency & Error Rate */}
       <div className="metric-card">
         <div className="metric-header">
           <span>p95 API Latency</span>
